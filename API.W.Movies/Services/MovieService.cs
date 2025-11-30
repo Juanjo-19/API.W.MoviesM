@@ -34,7 +34,8 @@ namespace API.W.Movies.Services
 
         public Task<MovieDto> GetMovieAsync(int id)
         {
-            throw new NotImplementedException();
+            var movie = _movieRepository.GetMovieAsync(id);
+            return _mapper.Map<Task<MovieDto>>(movie);
         }
 
         public async Task<ICollection<MovieDto>> GetMoviesAsync()
