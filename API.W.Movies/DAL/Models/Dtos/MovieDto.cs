@@ -9,5 +9,6 @@
         public required string Clasification { get; set; }
         public DateTime ReleaseDate { get; set; }
         public int CategoryId { get; set; }
+        public int Id { get; internal set; }
     }
 }

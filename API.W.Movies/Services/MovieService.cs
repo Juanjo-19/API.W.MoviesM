@@ -26,7 +26,7 @@ namespace API.W.Movies.Services
             throw new NotImplementedException();
         }
 
-        public async Task<bool> CreateMovieAsync(MovieCreateDto movieCreateDto)
+        public async Task<MovieDto> CreateMovieAsync(MovieCreateDto movieCreateDto)
         {
             var movieExits = await _movieRepository.MovieExitsByNameAsync(movieCreateDto.Title);
             if (movieExits)
@@ -36,18 +36,28 @@ namespace API.W.Movies.Services
             var movie = _mapper.Map<Movie>(movieCreateDto);
 
             var movieCreated = await _movieRepository.CreateMovieAsync(movie);
-            if (!movieCreated)
+            if (movieCreated == null)
             {
                 throw new Exception("fallo en la creacion de pelicula");
             }
 
-            return _mapper.Map<MovieDto>(movieCreated) != null;
+            return _mapper.Map<MovieDto>(movieCreated);
 
         }
 
-        public Task<bool> DeleteMovieAsync(int id)
+        public async Task<bool> DeleteMovieAsync(int id)
         {
-            throw new NotImplementedException();
+            var movieExists = await _movieRepository.GetMovieAsync(id);
+            if (movieExists == null)
+            {
+                throw new InvalidOperationException("No se encontro la pelicula con ID: '{id}'");
+            }
+            var movieDeleted = await _movieRepository.DeleteMovieAsync(id);
+            if (!movieDeleted)
+            {
+                throw new Exception("Fallo al eliminar la pelicula");
+            }
+            return movieDeleted;
         }
 
         public Task<MovieDto> GetMovieAsync(int id)
@@ -63,9 +73,25 @@ namespace API.W.Movies.Services
             
         }
 
-        public Task<bool> UpdateMovieAsync(Movie movie)
+        public async Task<bool> UpdateMovieAsync(MovieCreateDto dto, int id)
         {
-            throw new NotImplementedException();
+            var movieExists = await _movieRepository.GetMovieAsync(id);
+            if (movieExists == null)
+            {
+                throw new InvalidOperationException("No se encontro la pelicula con ID: '{id}'");
+            }
+            var nameExists = await _movieRepository.MovieExitsByNameAsync(dto.Title);
+            if (nameExists)
+            {
+                throw new InvalidOperationException("Ya existe una pelicula con el mismo nombre");
+            }
+            _mapper.Map(dto, movieExists);
+            var movieUpdated = await _movieRepository.UpdateMovieAsync(dto,id);
+            if (movieUpdated == null)
+            {
+                throw new Exception("Fallo al actualizar la pelicula");
+            }
+            return _mapper.Map<MovieDto>(movieUpdated) != null;
         }
     }
 }

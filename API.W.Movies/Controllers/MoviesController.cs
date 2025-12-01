@@ -9,7 +9,7 @@ namespace API.W.Movies.Controllers
     [ApiController]
     public class MoviesController : ControllerBase
     {
-        private readonly IMovieService _movieService;   
+        private readonly IMovieService _movieService;
         public MoviesController(IMovieService movieService)
         {
             _movieService = movieService;
@@ -46,9 +46,9 @@ namespace API.W.Movies.Controllers
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<ActionResult<MovieDto>> CreateMovieAsync([FromBody] MovieCreateDto movieCreateDto, IMovieService _movieService)
         {
-            if (!ModelState.IsValid) 
+            if (!ModelState.IsValid)
             {
-               return BadRequest(ModelState);
+                return BadRequest(ModelState);
             }
             try
             {
@@ -57,13 +57,61 @@ namespace API.W.Movies.Controllers
             }
             catch (InvalidOperationException ex) when (ex.Message.Contains("ya existe"))
             {
-             return Conflict(ex.Message);
+                return Conflict(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+
+        }
+
+        [HttpPut("{id:int }", Name = "UpdateMovieAsync ")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<ActionResult<MovieDto>> UpdateMovieAsync([FromBody] MovieCreateDto dto, int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                var updatedMovie = await _movieService.UpdateMovieAsync(dto, id);
+                return Ok(updatedMovie);
+            }
+            catch (InvalidOperationException ex) when (ex.Message.Contains("ya existe"))
+            {
+                return Conflict(ex.Message);
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+        [HttpDelete("{id:int }", Name = "UpdateMovieAsync ")]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<ActionResult> DeleteMovieAsync(int id)
+        {
+            try
+            {
+                var deletedMovie = await _movieService.DeleteMovieAsync(id);
+                return Ok(deletedMovie);
+            }
+            catch (InvalidOperationException ex) when (ex.Message.Contains("No se encontró"))
+            {
+                return NotFound(new { ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
 
+
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using API.W.Movies.DAL;
 using API.W.Movies.DAL.Models;
+using API.W.Movies.DAL.Models.Dtos;
 using API.W.Movies.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,20 +20,9 @@ namespace API.W.Movies.Repository
             await _context.SaveChangesAsync();
             return movie;
         }
-        public async Task<bool> MovieExistsByNameAsync(string name)
-        {
-            return await _context.Movies
-                .AsNoTracking()
-                .AnyAsync(c => c.Title == name);
-        }
 
-        public async Task<bool> CreateMovieAsync(Movie movie)
-        {
-            movie.CreatedDate = DateTime.UtcNow;
-            var addedMovie = await _context.Movies.AddAsync(movie);
-            await _context.SaveChangesAsync();
-            return true;
-        }
+
+        
 
         public async Task<bool> DeleteMovieAsync(int id)
         {
@@ -59,12 +49,65 @@ namespace API.W.Movies.Repository
             return await movie;
         }
 
-        public async Task<bool> UpdateMovieAsync(Movie movie)
+
+
+        public async Task<bool> MovieExitsByNameAsync(string title)
         {
+            return await _context.Movies
+                .AsNoTracking()
+                .AnyAsync(c => c.Title == title);
+        }
+
+        public async Task<MovieDto> CreateMovieAsync(Movie movie)
+        {
+            movie.CreatedDate = DateTime.UtcNow;
+            var addedMovie = await _context.Movies.AddAsync(movie);
+            await _context.SaveChangesAsync();
+            return new MovieDto
+            {
+                Title = addedMovie.Entity.Title,
+                Description = addedMovie.Entity.Description,
+                Duration = addedMovie.Entity.Duration,
+                Clasification = addedMovie.Entity.Clasification,
+                ReleaseDate = new DateTime(addedMovie.Entity.ReleaseYear, 1, 1),
+                CategoryId = addedMovie.Entity.CategoryId
+            };
+        }
+
+        public async Task<MovieDto> UpdateMovieAsync(MovieCreateDto dto, int id)
+        {
+            var movie = await _context.Movies.FindAsync(id);
+
+            if (movie == null)
+            {
+                return null; // o throw, depende del estilo de tu proyecto
+            }
+
+            // Actualizar campos
+            movie.Title = dto.Title;
+            movie.Description = dto.Description;
+            movie.Duration = dto.Duration;
+            movie.Clasification = dto.Clasification;
+            movie.ReleaseYear = dto.ReleaseYear;
+            movie.CategoryId = dto.CategoryId;
             movie.ModifiedDate = DateTime.UtcNow;
+
+            // Guardar cambios
             _context.Movies.Update(movie);
             await _context.SaveChangesAsync();
-            return true;
+
+            // Retornar DTO actualizado
+            return new MovieDto
+            {
+                Id = movie.Id,
+                Title = movie.Title,
+                Description = movie.Description,
+                Duration = movie.Duration,
+                Clasification = movie.Clasification,
+                ReleaseDate = new DateTime(movie.ReleaseYear, 1, 1),
+                CategoryId = movie.CategoryId
+            };
+
         }
     }
 }

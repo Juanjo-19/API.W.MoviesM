@@ -10,9 +10,9 @@ namespace API.W.Movies.Services.IServices
 
         Task<Movie> AddMovieAsync(Movie movie);
 
-        Task<bool> CreateMovieAsync(MovieCreateDto movieCreateDto);
+        Task<MovieDto> CreateMovieAsync(MovieCreateDto movieCreateDto);
 
-        Task<bool> UpdateMovieAsync(Movie movie);
+        Task<bool> UpdateMovieAsync(MovieCreateDto dto, int id);
 
         Task<bool> DeleteMovieAsync(int id);
     }

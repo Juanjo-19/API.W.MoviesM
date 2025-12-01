@@ -1,4 +1,5 @@
 ﻿using API.W.Movies.DAL.Models;
+using API.W.Movies.DAL.Models.Dtos;
 
 namespace API.W.Movies.Repository.IRepository
 {
@@ -10,9 +11,9 @@ namespace API.W.Movies.Repository.IRepository
         Task<Movie> AddMovieAsync(Movie movie);
         Task<bool> MovieExitsByNameAsync(string title);
 
-        Task<bool> CreateMovieAsync(Movie movie);
+        Task<MovieDto> CreateMovieAsync(Movie movie);
 
-        Task<bool> UpdateMovieAsync(Movie movie); 
+        Task<MovieDto> UpdateMovieAsync(MovieCreateDto dto,int id); 
 
         Task<bool> DeleteMovieAsync(int id);
     }
