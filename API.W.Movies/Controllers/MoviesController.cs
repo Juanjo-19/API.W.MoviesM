@@ -15,14 +15,14 @@ namespace API.W.Movies.Controllers
             _movieService = movieService;
         }
 
-        [HttpGet]
+        [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ICollection<MovieDto>>> GetMoviesAsync()
         {
             var movies = await _movieService.GetMoviesAsync();
             return Ok(movies);
         }
-        [HttpGet("{id:int}", Name = "GetMovieAsync ")]
+        [HttpGet("{id:int}", Name = "GetMovieAsync")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -38,7 +38,7 @@ namespace API.W.Movies.Controllers
             return CreateMovieAsync(movieCreateDto, _movieService);
         }
 
-        [HttpPost(Name = "CreateMovieAsync ")]
+        [HttpPost(Name = "CreateMovieAsync")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -66,7 +66,7 @@ namespace API.W.Movies.Controllers
 
         }
 
-        [HttpPut("{id:int }", Name = "UpdateMovieAsync ")]
+        [HttpPut("{id:int}", Name = "UpdateMovieAsync")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -91,7 +91,7 @@ namespace API.W.Movies.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-        [HttpDelete("{id:int }", Name = "UpdateMovieAsync ")]
+        [HttpDelete("{id:int}", Name = "DeleteMovieAsync")]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]

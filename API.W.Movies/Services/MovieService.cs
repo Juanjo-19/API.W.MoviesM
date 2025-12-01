@@ -60,10 +60,10 @@ namespace API.W.Movies.Services
             return movieDeleted;
         }
 
-        public Task<MovieDto> GetMovieAsync(int id)
+        public async Task<MovieDto> GetMovieAsync(int id)
         {
             var movie = _movieRepository.GetMovieAsync(id);
-            return _mapper.Map<Task<MovieDto>>(movie);
+            return _mapper.Map<MovieDto>(movie);
         }
 
         public async Task<ICollection<MovieDto>> GetMoviesAsync()
