@@ -1,6 +1,5 @@
 ﻿using API.W.Movies.DAL.Models.Dtos;
 using API.W.Movies.Services.IServices;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.W.Movies.Controllers
@@ -33,10 +32,6 @@ namespace API.W.Movies.Controllers
             return Ok(movies);
         }
 
-        public Task<ActionResult<MovieDto>> CreateMovieAsync([FromBody] MovieCreateDto movieCreateDto)
-        {
-            return CreateMovieAsync(movieCreateDto, _movieService);
-        }
 
         [HttpPost(Name = "CreateMovieAsync")]
         [ProducesResponseType(StatusCodes.Status200OK)]
