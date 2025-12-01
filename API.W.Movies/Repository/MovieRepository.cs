@@ -19,6 +19,12 @@ namespace API.W.Movies.Repository
             await _context.SaveChangesAsync();
             return movie;
         }
+        public async Task<bool> MovieExistsByNameAsync(string name)
+        {
+            return await _context.Movies
+                .AsNoTracking()
+                .AnyAsync(c => c.Title == name);
+        }
 
         public async Task<bool> CreateMovieAsync(Movie movie)
         {

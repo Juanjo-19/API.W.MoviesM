@@ -21,10 +21,28 @@ namespace API.W.Movies.Services
         {
             throw new NotImplementedException();
         }
-
-        public Task<bool> CreateMovieAsync(Movie movie)
+        public async Task<bool>MovieExitsByNameAsync(string name)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<bool> CreateMovieAsync(MovieCreateDto movieCreateDto)
+        {
+            var movieExits = await _movieRepository.MovieExitsByNameAsync(movieCreateDto.Title);
+            if (movieExits)
+            {
+                throw new InvalidOperationException("Ya existe una pelicula con el mismo nombre");
+            }
+            var movie = _mapper.Map<Movie>(movieCreateDto);
+
+            var movieCreated = await _movieRepository.CreateMovieAsync(movie);
+            if (!movieCreated)
+            {
+                throw new Exception("fallo en la creacion de pelicula");
+            }
+
+            return _mapper.Map<MovieDto>(movieCreated) != null;
+
         }
 
         public Task<bool> DeleteMovieAsync(int id)

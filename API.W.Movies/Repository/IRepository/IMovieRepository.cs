@@ -8,6 +8,7 @@ namespace API.W.Movies.Repository.IRepository
         Task<Movie> GetMovieAsync(int id);
 
         Task<Movie> AddMovieAsync(Movie movie);
+        Task<bool> MovieExitsByNameAsync(string title);
 
         Task<bool> CreateMovieAsync(Movie movie);
 

@@ -32,5 +32,38 @@ namespace API.W.Movies.Controllers
             var movies = await _movieService.GetMovieAsync(id);
             return Ok(movies);
         }
+
+        public Task<ActionResult<MovieDto>> CreateMovieAsync([FromBody] MovieCreateDto movieCreateDto)
+        {
+            return CreateMovieAsync(movieCreateDto, _movieService);
+        }
+
+        [HttpPost(Name = "CreateMovieAsync ")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<ActionResult<MovieDto>> CreateMovieAsync([FromBody] MovieCreateDto movieCreateDto, IMovieService _movieService)
+        {
+            if (!ModelState.IsValid) 
+            {
+               return BadRequest(ModelState);
+            }
+            try
+            {
+                var createdMovie = await _movieService.CreateMovieAsync(movieCreateDto);
+                return CreatedAtRoute("GetMovieAsync", new { id = createdMovie.Id }, createdMovie);
+            }
+            catch (InvalidOperationException ex) when (ex.Message.Contains("ya existe"))
+            {
+             return Conflict(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
     }
 }

@@ -10,7 +10,7 @@ namespace API.W.Movies.Services.IServices
 
         Task<Movie> AddMovieAsync(Movie movie);
 
-        Task<bool> CreateMovieAsync(Movie movie);
+        Task<bool> CreateMovieAsync(MovieCreateDto movieCreateDto);
 
         Task<bool> UpdateMovieAsync(Movie movie);
 
